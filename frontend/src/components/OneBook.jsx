@@ -10,6 +10,8 @@ const OneBook = () => {
     const [selectedPayment, setSelectedPayment] = useState('cash_on_delivery');
     const [quantity, setQuantity] = useState(1); // State for quantity
     const [totalPrice, setTotalPrice] = useState(0); // State for total price
+    const [aiSummary, setAiSummary] = useState(null);
+    const [loadingSummary, setLoadingSummary] = useState(false);
 
     useEffect(() => {
         const fetchBookData = async () => {
@@ -58,6 +60,30 @@ const OneBook = () => {
             paymentMethod: selectedPayment, // Include selected payment method
         };
 
+        if (selectedPayment === 'stripe') {
+            // Cache order details for PaymentSuccess retrieval
+            localStorage.setItem('pendingOrderData', JSON.stringify(orderData));
+            
+            try {
+                const sessionRes = await axios.post('http://localhost:3000/order/create-checkout-session', {
+                    productID: bookData._id,
+                    productName: bookData.name,
+                    quantity: quantity,
+                    totalPrice: totalPrice,
+                    image: bookData.image
+                });
+                
+                // Redirect user to Stripe Checkout
+                if (sessionRes.data.url) {
+                    window.location.href = sessionRes.data.url;
+                }
+            } catch (error) {
+                console.error("Error creating Stripe session:", error);
+                alert("Failed to initiate secure payment. Contact support or check settings.");
+            }
+            return; // STOP execution here, do not run cash_on_delivery logic
+        }
+
         try {
             const response = await axios.post('http://localhost:3000/order/placeorder', orderData);
             alert(response.data.message);
@@ -65,6 +91,22 @@ const OneBook = () => {
         } catch (error) {
             console.error("Error placing order:", error);
             alert('Failed to place order.');
+        }
+    };
+
+    const handleAISummary = async () => {
+        if (!bookData) return;
+        setLoadingSummary(true);
+        try {
+            const res = await axios.post(`http://localhost:3000/ai/summarize`, { 
+                name: bookData.name, 
+                description: bookData.description 
+            });
+            setAiSummary(res.data.summary);
+        } catch (error) {
+            setAiSummary("Oops! I couldn't generate a summary right now.");
+        } finally {
+            setLoadingSummary(false);
         }
     };
 
@@ -88,7 +130,23 @@ const OneBook = () => {
                             </h1>
                             <p className="dark:text-white leading-relaxed">{bookData.description}</p>
                             <p className="leading-relaxed dark:text-white">Category: {bookData.category}</p>
-                            <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5"></div>
+                            
+                            <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
+                                <button
+                                    onClick={handleAISummary}
+                                    disabled={loadingSummary}
+                                    className="flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded disabled:opacity-50 transition-all font-medium"
+                                >
+                                    {loadingSummary ? 'Generating AI Summary...' : '✨ Generate AI Summary'}
+                                </button>
+                            </div>
+                            
+                            {aiSummary && (
+                                <div className="p-4 mb-5 bg-indigo-50 dark:bg-gray-800 border-l-4 border-indigo-500 rounded-lg shadow-sm">
+                                    <p className="text-gray-800 dark:text-gray-100 text-sm md:text-base leading-relaxed">{aiSummary}</p>
+                                </div>
+                            )}
+
                             <div className="flex">
                                 <span className="font-medium text-2xl text-gray-900 dark:text-white">
                                     Rs. {bookData.price}
@@ -196,8 +254,7 @@ const OneBook = () => {
                                 >
                                     <option value="" disabled>Select Payment Method</option>
                                     <option value="cash_on_delivery">Cash on Delivery</option>
-                                    {/* <option value="upi">UPI</option>
-                                    <option value="card">Card</option> */}
+                                    <option value="stripe">Pay with Card (Stripe)</option>
                                 </select>
 
                                 <button

@@ -1,18 +1,16 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const FreeBooks = () => {
-  // Initialize Books as an empty array to avoid undefined issues
   const [Books, setBooks] = useState([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get("http://localhost:3000/book/getbook");
-       // console.log(response.data); // For debugging
+        console.log(response.data); // Debugging
 
-        // Assuming the data is inside response.data
-        setBooks(response.data); 
+        setBooks(response.data);
       } catch (error) {
         console.error("Error fetching books:", error);
       }
@@ -21,19 +19,19 @@ const FreeBooks = () => {
     fetchBooks();
   }, []);
 
-  // Filter only free books
   const freeBooks = Books.filter((book) => book.price === 0);
 
   return (
     <section className="text-gray-600 body-font dark:bg-gray-800">
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
-          <h1 className=" dark:text-white sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+          <h1 className="dark:text-white sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
             Featured Free Books
           </h1>
           <p className="lg:w-2/3 mx-auto leading-relaxed text-base dark:text-white">
-            Explore our curated selection of must-read books, perfect for every book lover.
-            From timeless classics to modern bestsellers, we have something for everyone.
+            Explore our curated selection of must-read books, perfect for every
+            book lover. From timeless classics to modern bestsellers, we have
+            something for everyone.
           </p>
         </div>
         <div className="flex flex-wrap -m-4">
@@ -51,10 +49,11 @@ const FreeBooks = () => {
                       {book.category}
                     </h2>
                     <h1 className="title-font text-lg font-medium text-gray-900 mb-3">
-                      {book.title}
+                      {book.name}
                     </h1>
+                    <a href={`${book.bookUrl}`}>Link.</a>
                     <p className="leading-relaxed">
-                      {book.price === 0 ? 'Free' : `$${book.price}`}
+                      {book.price === 0 ? "Free" : `$${book.price}`}
                     </p>
                   </div>
                 </div>

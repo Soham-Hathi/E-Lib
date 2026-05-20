@@ -2,6 +2,7 @@ import Order from "../models/order.model.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Stripe from 'stripe';
 
 dotenv.config();
 // Create a new order
@@ -199,4 +200,39 @@ export const cancelOrder = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const createCheckoutSession = async (req, res) => {
+    try {
+        if (!process.env.STRIPE_SECRET_KEY) {
+             return res.status(500).json({ error: "Stripe Secret Key is not configured." });
+        }
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const { productID, productName, quantity, totalPrice, image } = req.body;
+        
+        const lineItems = [{
+            price_data: {
+                currency: 'inr',
+                product_data: {
+                    name: productName,
+                    images: image ? [image] : [],
+                },
+                unit_amount: Math.round((totalPrice / quantity) * 100), // Stripe expects amount in paise (smallest currency unit)
+            },
+            quantity: quantity,
+        }];
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: `http://localhost:5173/success`,
+            cancel_url: `http://localhost:5173/cancel`,
+        });
+
+        res.status(200).json({ id: session.id, url: session.url });
+    } catch (error) {
+        console.error("Stripe Checkout Error: ", error);
+        res.status(500).json({ error: error.message });
+    }
 };
