@@ -1,5 +1,5 @@
 services:
-  # 1. Backend REST API Web Service
+  # Backend REST API Web Service
   - type: web
     name: elibrary-backend
     runtime: node
@@ -29,43 +29,3 @@ services:
         sync: false
       - key: EMAIL_PASS
         sync: false
-
-  # 2. Customer Storefront Static Web Application
-  - type: web
-    name: elibrary-storefront
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: NODE_VERSION
-        value: 20.18.0
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: elibrary-backend
-          property: host
-
-  # 3. Admin Executive Panel Static Web Application
-  - type: web
-    name: elibrary-admin
-    runtime: static
-    rootDir: admin
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: NODE_VERSION
-        value: 20.18.0
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: elibrary-backend
-          property: host
