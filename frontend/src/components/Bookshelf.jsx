@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
+import { API_BASE_URL } from '../config/api';
 
 const SHELF_TABS = [
   { key: 'currently_reading', label: '📖 Currently Reading' },
@@ -30,7 +31,7 @@ const Bookshelf = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await axios.get('http://localhost:3000/bookshelf', {
+      const res = await axios.get(`${API_BASE_URL}/bookshelf`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookshelfItems(res.data.bookshelf || []);
@@ -49,7 +50,7 @@ const Bookshelf = () => {
   const handleShelfChange = async (bookId, newShelf) => {
     try {
       await axios.post(
-        'http://localhost:3000/bookshelf',
+        `${API_BASE_URL}/bookshelf`,
         { bookId, shelf: newShelf },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -64,7 +65,7 @@ const Bookshelf = () => {
   const handleRemoveFromShelf = async (bookId) => {
     if (!window.confirm('Remove this book from your bookshelf?')) return;
     try {
-      await axios.delete(`http://localhost:3000/bookshelf/${bookId}`, {
+      await axios.delete(`${API_BASE_URL}/bookshelf/${bookId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStatusMsg('Removed from bookshelf');

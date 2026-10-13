@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import API_BASE_URL from '../config/api';
 
 const AllBooks = () => {
   const [books, setBooks] = useState([]);
@@ -17,7 +18,7 @@ const AllBooks = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/book/getbook');
+        const response = await axios.get(`${API_BASE_URL}/book/getbook`);
         setBooks(response.data);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -55,7 +56,7 @@ const AllBooks = () => {
     const token = localStorage.getItem('token');  // Assuming JWT is saved in localStorage
 
     try {
-      await axios.put(`http://localhost:3000/book/updatebook/${currentBook._id}`, formData,{
+      await axios.put(`${API_BASE_URL}/book/updatebook/${currentBook._id}`, formData,{
         headers: { Authorization: `Bearer ${token}` }
       });
       setBooks(books.map((book) => (book._id === currentBook._id ? { ...book, ...formData } : book)));
@@ -73,7 +74,7 @@ const AllBooks = () => {
 
     if (window.confirm('Are you sure you want to delete this book?')) {
       try {
-        await axios.delete(`http://localhost:3000/book/deletebook/${id}`,{
+        await axios.delete(`${API_BASE_URL}/book/deletebook/${id}`,{
           headers: { Authorization: `Bearer ${token}` }
         });
         setBooks(books.filter((book) => book._id !== id));

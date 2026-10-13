@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiUser, FiMail, FiCalendar, FiShield, FiCheckCircle, FiEdit2, FiSave, FiArrowLeft } from 'react-icons/fi';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ const Profile = () => {
 
         // Fetch active subscription details
         try {
-          const subRes = await axios.get(`http://localhost:3000/payment/subscription`, {
+          const subRes = await axios.get(`${API_BASE_URL}/payment/subscription`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (subRes.data) {

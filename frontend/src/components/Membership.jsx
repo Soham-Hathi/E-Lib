@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiCheck, FiX, FiAward, FiZap, FiBookOpen, FiDownload, FiHelpCircle, FiChevronDown, FiChevronUp, FiShield, FiStar } from 'react-icons/fi';
+import { API_BASE_URL } from '../config/api';
 
 const Membership = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Membership = () => {
       try {
         setLoading(true);
         // 1. Fetch available plans
-        const plansRes = await axios.get('http://localhost:3000/payment/plans');
+        const plansRes = await axios.get(`${API_BASE_URL}/payment/plans`);
         if (plansRes.data?.plans) {
           setPlans(plansRes.data.plans);
         }
@@ -39,7 +40,7 @@ const Membership = () => {
         // 2. If logged in, fetch subscription status
         if (token) {
           try {
-            const subRes = await axios.get('http://localhost:3000/payment/subscription', {
+            const subRes = await axios.get(`${API_BASE_URL}/payment/subscription`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (subRes.data && subRes.data.isPro) {
@@ -87,7 +88,7 @@ const Membership = () => {
     try {
       // 1. Create order on backend
       const res = await axios.post(
-        'http://localhost:3000/payment/create-order',
+        `${API_BASE_URL}/payment/create-order`,
         { planId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -157,7 +158,7 @@ const Membership = () => {
   const verifyAndActivate = async (payload) => {
     try {
       const verifyRes = await axios.post(
-        'http://localhost:3000/payment/verify',
+        `${API_BASE_URL}/payment/verify`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

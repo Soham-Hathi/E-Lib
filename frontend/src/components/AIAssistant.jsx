@@ -4,8 +4,7 @@ import { IoCloseSharp, IoSend } from 'react-icons/io5';
 import { FiBookOpen } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const AIAssistant = () => {
     const navigate = useNavigate();

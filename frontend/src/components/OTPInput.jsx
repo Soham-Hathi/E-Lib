@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-
-const API_BASE_URL = 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const OTPInput = () => {
   const navigate = useNavigate();

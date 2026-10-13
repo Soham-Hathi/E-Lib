@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config/api";
 
 const UploadBook = () => {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ const UploadBook = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/book/uploadbook",
+        `${API_BASE_URL}/book/uploadbook`,
         form,
         {
           headers: {

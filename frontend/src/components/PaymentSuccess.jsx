@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BsCheckCircleFill } from 'react-icons/bs';
+import { API_BASE_URL } from '../config/api';
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const PaymentSuccess = () => {
                     // Override payment method naming if desired or keep as stripe_card
                     orderData.paymentMethod = 'Card (Stripe)';
                     
-                    const response = await axios.post('http://localhost:3000/order/placeorder', orderData);
+                    const response = await axios.post(`${API_BASE_URL}/order/placeorder`, orderData);
                     setStatus('Payment Successful! Your order has been placed and email sent.');
                     localStorage.removeItem('pendingOrderData');
                 } catch (error) {

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 
 const Login = () => {
     const navigate= useNavigate();
@@ -26,7 +27,7 @@ const Login = () => {
     setSuccess(false);
 
     try {
-        const response = await axios.post('http://localhost:3000/user/login', formData);
+        const response = await axios.post(`${API_BASE_URL}/user/login`, formData);
         
         // Strict role check: Only persist session if user has verified admin privileges
         if (response.data.token && response.data.user?.isAdmin === true) {

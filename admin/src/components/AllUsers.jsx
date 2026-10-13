@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 const AllUsers = () => {
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
@@ -9,7 +10,7 @@ const AllUsers = () => {
   useEffect(() => {
     const GetUser = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/user/getusers', {
+        const response = await axios.get(`${API_BASE_URL}/user/getusers`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsers(response.data);
@@ -25,7 +26,7 @@ const AllUsers = () => {
     try {
       // API call to update user as admin
       const response = await axios.put(
-        `http://localhost:3000/user/updateuser/${id}`,
+        `${API_BASE_URL}/user/updateuser/${id}`,
         { isAdmin: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -43,7 +44,7 @@ const AllUsers = () => {
   const onToggleVip = async (id, isPro) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/user/updateuser/${id}`,
+        `${API_BASE_URL}/user/updateuser/${id}`,
         { isPro },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -58,7 +59,7 @@ const AllUsers = () => {
   // Delete user
   const onDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/user/deleteuser/${id}`, {
+      const response = await axios.delete(`${API_BASE_URL}/user/deleteuser/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert(response.data.message); // Show success message

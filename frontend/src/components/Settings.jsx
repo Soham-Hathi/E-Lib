@@ -3,8 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../ThemeContext';
 import { FiLock, FiMoon, FiSun, FiTrash2, FiShield, FiAlertTriangle, FiArrowLeft } from 'react-icons/fi';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const Settings = () => {
   const navigate = useNavigate();

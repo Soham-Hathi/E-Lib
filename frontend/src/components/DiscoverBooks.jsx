@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FiSearch, FiExternalLink, FiDownload, FiBookOpen, FiShoppingCart, FiLayers } from 'react-icons/fi';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api';
 
 const DiscoverBooks = () => {
   const [query, setQuery] = useState('science');

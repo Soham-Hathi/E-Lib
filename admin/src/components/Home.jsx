@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -69,10 +70,10 @@ const Home = () => {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
       const [booksRes, usersRes, ordersRes, subsRes] = await Promise.all([
-        axios.get('http://localhost:3000/book/getbook'),
-        axios.get('http://localhost:3000/user/getusers', { headers }),
-        axios.get('http://localhost:3000/order/allorders', { headers }),
-        axios.get('http://localhost:3000/payment/all-subscriptions', { headers }).catch(() => ({ data: { totalActive: 0, totalRevenue: 0, subscriptions: [] } })),
+        axios.get(`${API_BASE_URL}/book/getbook`),
+        axios.get(`${API_BASE_URL}/user/getusers`, { headers }),
+        axios.get(`${API_BASE_URL}/order/allorders`, { headers }),
+        axios.get(`${API_BASE_URL}/payment/all-subscriptions`, { headers }).catch(() => ({ data: { totalActive: 0, totalRevenue: 0, subscriptions: [] } })),
       ]);
 
       const books = booksRes.data || [];
@@ -128,7 +129,7 @@ const Home = () => {
 
   const handleExportCSV = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/order/export-csv', {
+      const res = await axios.get(`${API_BASE_URL}/order/export-csv`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       });

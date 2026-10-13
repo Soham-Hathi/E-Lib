@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../ThemeContext';
+import { API_BASE_URL } from '../config/api';
 
 const Reader = () => {
   const { id } = useParams();
@@ -53,14 +54,14 @@ const Reader = () => {
       try {
         setLoading(true);
         setError('');
-        const res = await axios.get(`http://localhost:3000/reader/content/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/reader/content/${id}`);
         setBook(res.data.book);
         setChapters(res.data.chapters || []);
 
         // Load saved progress if authenticated
         if (token) {
           try {
-            const progRes = await axios.get(`http://localhost:3000/reader/progress/${id}`, {
+            const progRes = await axios.get(`${API_BASE_URL}/reader/progress/${id}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (progRes.data) {
@@ -103,7 +104,7 @@ const Reader = () => {
     setReadingProgress(pct);
     try {
       await axios.post(
-        'http://localhost:3000/reader/progress',
+        `${API_BASE_URL}/reader/progress`,
         {
           bookId: id,
           cfi: String(chIndex),
@@ -150,7 +151,7 @@ const Reader = () => {
     const currentChapter = chapters[currentChapterIndex];
     try {
       const res = await axios.post(
-        'http://localhost:3000/reader/bookmark',
+        `${API_BASE_URL}/reader/bookmark`,
         {
           bookId: id,
           cfi: String(currentChapterIndex),
@@ -223,7 +224,7 @@ const Reader = () => {
 
     try {
       const currentChapter = chapters[currentChapterIndex];
-      const res = await axios.post('http://localhost:3000/ai/chat-with-book', {
+      const res = await axios.post(`${API_BASE_URL}/ai/chat-with-book`, {
         bookId: id,
         message: userMsg,
         chapterTitle: currentChapter?.title,
@@ -251,7 +252,7 @@ const Reader = () => {
     setQuizLoading(true);
     try {
       const currentChapter = chapters[currentChapterIndex];
-      const res = await axios.post('http://localhost:3000/ai/study-tools', {
+      const res = await axios.post(`${API_BASE_URL}/ai/study-tools`, {
         toolType: 'quiz',
         bookId: id,
         bookTitle: book?.name,
