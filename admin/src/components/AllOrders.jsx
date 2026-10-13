@@ -77,17 +77,41 @@ const AllOrders = () => {
       order.productName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleExportCSV = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/order/export-csv', {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'elibrary_orders_report.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      alert('Failed to export CSV: ' + (err.message || 'Error'));
+    }
+  };
+
   return (
     <>
-      {/* Search Bar */}
-      <div className="m-4">
+      {/* Search & Export Actions Bar */}
+      <div className="m-4 flex flex-col sm:flex-row gap-3 items-center">
         <input
           type="text"
           placeholder="Search orders by email, order ID, name, or product name..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
-          className="w-full px-4 py-2 border rounded-lg"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 w-full px-4 py-2.5 border rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none focus:border-blue-500"
         />
+        <button
+          onClick={handleExportCSV}
+          className="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-sm transition shadow-sm flex items-center justify-center gap-2 whitespace-nowrap"
+        >
+          <span>📊</span> Export Orders CSV
+        </button>
       </div>
   
       {message && <p className="text-center text-green-500">{message}</p>}

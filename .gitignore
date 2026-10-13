@@ -16,6 +16,9 @@ build/
 **/dist/
 **/build/
 
+# Local baseline backups
+.backup/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

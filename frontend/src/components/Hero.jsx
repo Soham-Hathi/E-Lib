@@ -19,7 +19,7 @@ const Hero = () => {
                         From bestsellers to hidden gems, our bookstore has something for everyone.
                     </p>
                     <div className="flex justify-center">
-                        <Link to={token ? '/paidbooks' : '/signup'} className="inline-flex text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">
+                        <Link to='/paidbooks' className="inline-flex text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">
                             Explore Now
                         </Link>
 

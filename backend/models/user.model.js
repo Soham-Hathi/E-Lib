@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     fullname: {
         type: String,
         required: true,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        lowercase: true,
+        trim: true,
+        index: true,
     },
     password: {
         type: String,
@@ -16,28 +20,55 @@ const UserSchema = mongoose.Schema({
     },
     isAdmin: {
         type: Boolean,
-        default: false, // By default, the user is not an admin
+        default: false,
+    },
+    isPro: {
+        type: Boolean,
+        default: false,
     },
     isVerified: { 
         type: Boolean, 
-        default: false 
-    },  // Field for verifying user email (optional, depending on your needs)
+        default: false,
+        index: true,
+    },
+    emailVerifiedAt: {
+        type: Date,
+        default: null,
+    },
     verificationToken: { 
-        type: String 
-    }, // For email verification (optional)
+        type: String,
+        default: null,
+    },
+    verificationTokenExpires: {
+        type: Date,
+        default: null,
+    },
+    verificationEmailStatus: {
+        type: String,
+        enum: ['pending', 'sent', 'failed', 'dev_preview'],
+        default: 'pending',
+    },
+    lastVerificationEmailSentAt: {
+        type: Date,
+        default: null,
+    },
     resetPasswordToken: { 
-        type: String 
-    }, // Token used for resetting the password (JWT)
+        type: String,
+        default: null,
+    },
     resetPasswordExpires: { 
-        type: Date 
-    }, // Expiration time for reset token
+        type: Date,
+        default: null,
+    },
     resetOtp: {
-        type: Number, // Store the 6-digit OTP as a number
+        type: Number,
+        default: null,
     },
     resetOtpExpires: {
-        type: Date, // Expiry time for the OTP
+        type: Date,
+        default: null,
     },
-});
+}, { timestamps: true });
 
 const User = mongoose.model("User", UserSchema);
 

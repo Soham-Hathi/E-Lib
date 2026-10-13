@@ -27,27 +27,22 @@ const Login = () => {
 
     try {
         const response = await axios.post('http://localhost:3000/user/login', formData);
-        console.log(response.data); // For debugging
         
-        // If login is successful, save the token to localStorage
-        if (response.data.token) {
+        // Strict role check: Only persist session if user has verified admin privileges
+        if (response.data.token && response.data.user?.isAdmin === true) {
             localStorage.setItem('token', response.data.token);
-            setSuccess(true); // Show success message
-            setFormData({ email: '', password: '' }); // Reset form
-
-            if (response.data.user.isAdmin === true) {
-                navigate('/dashboard');
-                window.location.reload();
-            } else {
-                // If the user is not an admin
-                setError('You are not an admin.');
-            }
+            localStorage.setItem('adminUser', JSON.stringify(response.data.user));
+            setSuccess(true);
+            setFormData({ email: '', password: '' });
+            navigate('/dashboard');
         } else {
-            setError('Login failed. Please check your credentials.');
+            localStorage.removeItem('token');
+            localStorage.removeItem('adminUser');
+            setError('Access denied. Administrator privileges required to access the admin portal.');
         }
     } catch (err) {
         console.error(err);
-        setError('Failed to login. Please try again.');
+        setError(err.response?.data?.message || 'Failed to login. Please verify your credentials.');
     }
     setLoading(false);
 };
