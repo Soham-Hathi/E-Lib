@@ -2,7 +2,7 @@ services:
   # 1. Backend REST API Web Service
   - type: web
     name: elibrary-backend
-    env: node
+    runtime: node
     plan: free
     rootDir: backend
     buildCommand: npm install --legacy-peer-deps
@@ -33,7 +33,7 @@ services:
   # 2. Customer Storefront Static Web Application
   - type: web
     name: elibrary-storefront
-    env: static
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -53,7 +53,7 @@ services:
   # 3. Admin Executive Panel Static Web Application
   - type: web
     name: elibrary-admin
-    env: static
+    runtime: static
     rootDir: admin
     buildCommand: npm install && npm run build
     staticPublishPath: dist
